@@ -1,6 +1,18 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
+
+const users = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/users`)
+    users.value = await res.json()
+  } catch (err) {
+    console.error('Erreur API :', err)
+  }
+})
 </script>
 
 <template>
@@ -14,6 +26,13 @@ import TheWelcome from './components/TheWelcome.vue'
 
   <main>
     <TheWelcome />
+
+    <section>
+      <h2>Utilisateurs depuis l’API :</h2>
+      <ul>
+        <li v-for="u in users" :key="u.id">{{ u.name }}</li>
+      </ul>
+    </section>
   </main>
 </template>
 
